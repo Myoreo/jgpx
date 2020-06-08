@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//En" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aoping.jiguangpx.dao.AlbumDao">
+
+	<sql id="fields">
+		id,name,cover,account_id,status,create_time,update_time
+	</sql>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		insert into px_album (name,cover,account_id) values(#{name},#{cover},#{accountId})
+	</insert>
+
+
+	<select id="getList" resultType="album">
+		select <include refid="fields"/>
+		from px_album
+		where status > 0 and account_id=#{accountId}
+		order by id desc
+	</select>
+	
+	
+	<update id="update">
+		update px_album
+		<set>
+			<if test="name!=null and name!=''">name=#{name},</if>
+			<if test="cover!=null and cover!=''">cover=#{cover},</if>
+			update_time=now()
+		</set>
+		where id =#{id}
+	</update>
+	
+	<select id="getById" resultType="album">
+		select <include refid="fields"/>
+		from px_album
+		where  id = #{id} and status > 0 
+	</select>
+  
+</mapper>

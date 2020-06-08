@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//En" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aoping.jiguangpx.dao.AlbumPicDao">
+
+	<sql id="fields">
+		id,url,album_id,account_id,pic_hash,pic_name,type,jpg_id,unique_code,hot,note,size,width,height,shoot_time,exposure_time,f_number,iso,focal_len,
+		camera_model,lens_model,status,create_time,update_time
+	</sql>
+
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		insert
+		into px_album_pic
+		(id,url,album_id,account_id,pic_hash,pic_name,type,jpg_id,unique_code,hot,note,size,width,height)
+		values
+		(#{id},#{url},#{albumId},#{accountId},#{picHash},#{picName},#{type},#{jpgId},#{uniqueCode},#{hot},#{note},#{size},#{width},#{height})
+	</insert>
+	
+	<update id="updateExif">
+		update px_album_pic
+		<set>
+			shoot_time=#{shootTime},
+			exposure_time=#{exposureTime},
+			f_number=#{fNumber},
+			iso=#{iso},
+			focal_len=#{focalLen},
+			camera_model=#{cameraModel},
+			lens_model=#{lensModel},
+		</set>
+		where id=#{id}
+	</update>
+	
+	<select id="getByPicHash" resultType="albumPic">
+		select <include refid="fields"/>
+		from px_album_pic 
+		where pic_hash=#{picHash}
+	</select>
+	
+	
+	<select id="getList" resultType="albumPic">
+		select <include refid="fields"/>
+		from px_album_pic 
+		where album_id=#{albumId} and status>0
+		order by 
+		<if test="sortType==0">id desc</if>
+		<if test="sortType==1">shoot_time desc</if>
+	</select>
+	
+	<update id="updateStatus">
+		update px_album_pic
+		set status=#{status}
+		where id=#{id}
+	</update>
+
+
+</mapper>
